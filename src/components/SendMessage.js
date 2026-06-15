@@ -2,92 +2,78 @@ import { useState } from "react";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db, auth } from "../firebase";
 import { getKolkataAIReply } from "./services/kolkataAI";
+import { askAI } from "./services/aiService";
 
 const SendMessage = ({ chatId }) => {
-  const [text, setText] = useState("");
-  const [loading, setLoading] = useState(false);
-const send = async () => {
-  if (!text.trim()) return;
-  if (!chatId) return;
-  if (!auth.currentUser) return;
+  const [message, setMessage] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
 
-  const uid = auth.currentUser.uid;
+  const sendMessage = async (e) => {
+    e.preventDefault();
 
-  const messagesRef = collection(
-    db,
-    "users",
-    uid,
-    "chats",
-    chatId,
-    "messages"
-  );
+    if (!message.trim() || !chatId || !auth.currentUser) return;
 
-  const userMessage = text;
+    const userMessage = message;
+    setMessage("");
 
-  setLoading(true);
+    const messagesRef = collection(
+      db,
+      "users",
+      auth.currentUser.uid,
+      "chats",
+      chatId,
+      "messages"
+    );
 
-  try {
-    // Save user message
     await addDoc(messagesRef, {
       text: userMessage,
-      uid,
+      uid: auth.currentUser.uid,
+      sender: "user",
       createdAt: serverTimestamp(),
     });
 
-    setText("");
-
-    // Get AI response
-    const botReply = await getKolkataAIReply(userMessage);
-
-    // Save AI response
-    await addDoc(messagesRef, {
-      text: botReply,
-      uid: "bot",
-      createdAt: serverTimestamp(),
-    });
-  } catch (error) {
-    console.error(error);
-
-    let errorMessage = "Something went wrong.";
-
-    if (
-      error?.message?.includes("429") ||
-      error?.status === 429
-    ) {
-      errorMessage =
-        "API limit exceeded. Please try again later.";
-    }
-
-    await addDoc(messagesRef, {
-      text: errorMessage,
-      uid: "bot",
-      createdAt: serverTimestamp(),
-    });
-  } finally {
-    setLoading(false);
-  }
-};
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      send();
+    try {
+      setAiLoading(true);
+      const aiResponse = await askAI(userMessage);
+      await addDoc(messagesRef, {
+        text: aiResponse,
+        uid: "ai",
+        sender: "ai",
+        createdAt: serverTimestamp(),
+      });
+    } catch (error) {
+      await addDoc(messagesRef, {
+        text: "Something went wrong. Please try again.",
+        uid: "ai",
+        sender: "ai",
+        createdAt: serverTimestamp(),
+      });
+    } finally {
+      setAiLoading(false);
     }
   };
 
   return (
-    <form className="send-message">
-      <input
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        onKeyDown={handleKeyDown}
-        placeholder="Ask about Kolkata..."
-        disabled={loading}
-      />
+    <>
+      {aiLoading && (
+        <div className="ai-typing">
+          AI is typing<span className="dots">...</span>
+        </div>
+      )}
 
-      <button onClick={send} disabled={loading}>
-        {loading ? "..." : "Send"}
-      </button>
-    </form>
+      <form onSubmit={sendMessage} className="send-message">
+        <input
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="Type message..."
+          disabled={aiLoading}
+        />
+
+        <button type="submit" disabled={aiLoading}>
+          Send
+        </button>
+      </form>
+    </>
   );
 };
 

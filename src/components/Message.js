@@ -1,11 +1,19 @@
 const Message = ({ message }) => {
+  const isAI = message.sender === "ai";
+
   return (
     <div
-      className={`msg ${
-        message.role === "user" ? "user" : "ai"
+      className={`message-row ${
+        isAI ? "ai-row" : "user-row"
       }`}
     >
-      {message.text}
+      <div
+        className={`message-bubble ${
+          isAI ? "ai-bubble" : "user-bubble"
+        }`}
+      >
+        {message.text}
+      </div>
     </div>
   );
 };

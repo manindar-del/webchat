@@ -1,39 +1,29 @@
-export async function askAI(message) {
- const apiKey =  process.env.REACT_APP_GCP_API_KEY;;
 
-  try {
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [{ text: message }],
-            },
-          ],
-        }),
-      }
-    );
 
-    const data = await res.json();
-    console.log("Status:", res.status);
-    console.log("Response:", data);
-    if (!res.ok) {
-      if (res.status === 429) {
-        return "Gemini quota exceeded. Please try later.";
-      }
-      return data?.error?.message || "API Error";
+ const API_KEY = process.env.REACT_APP_OPENROUTER_API_KEY;
+//  console.log("API Key:", API_KEY); 
+
+export const askAI = async (message) => {
+  const response = await fetch(
+    "https://openrouter.ai/api/v1/chat/completions",
+    {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "deepseek/deepseek-chat-v3",
+        messages: [
+          {
+            role: "user",
+            content: message,
+          },
+        ],
+      }),
     }
-    return (
-      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "No response"
-    );
-  } catch (err) {
-    console.error(err);
-    return "Network Error";
-  }
-}
+  );
+
+  const data = await response.json();
+  return data.choices[0].message.content;
+};

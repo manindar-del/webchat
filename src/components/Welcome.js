@@ -1,24 +1,33 @@
-import React from "react";
+import React, { useEffect } from "react";
 import GoogleSignin from "../img/google-signin-button.png";
 import {
   GoogleAuthProvider,
   signInWithRedirect,
   signInAnonymously,
+  signInWithPopup,
 } from "firebase/auth";
 
 import { auth } from "../firebase";
+import { useNavigate, useNavigation } from "react-router-dom";
 
-const Welcome = () => {
-  const googleSignIn = async () => {
+const Welcome = ({user}) => {
+const navigate = useNavigate();
+    const googleSignIn = async () => {
     const provider = new GoogleAuthProvider();
-    await signInWithRedirect(auth, provider);
-    
-
+    await signInWithPopup(auth, provider);
+    navigate("/chat", { replace: true });
   };
 
   const guestLogin = async () => {
     await signInAnonymously(auth);
+     navigate("/chat", { replace: true });
   };
+  useEffect(() => {
+    if (user) {
+       navigate("/chat", { replace: true });
+    }
+  }, [user, navigate]);
+
 
   return (
     <main className="welcome">

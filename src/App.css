@@ -55,7 +55,6 @@ input {
 .welcome {
   padding: 30px;
   text-align: center;
-  margin-top: 40px;
   color: #7cc5d9;
 }
 .welcome :is(h2, p, img) {
@@ -141,3 +140,300 @@ input {
   background-color: #7cc5d9;
   font-weight: 600;
 }
+
+.welcome {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #202123;
+}
+
+.welcome-card {
+  width: 400px;
+  background: #2d2f34;
+  padding: 30px;
+  border-radius: 20px;
+  text-align: center;
+  color: white;
+}
+
+.welcome-card h1 {
+  margin-top: 15px;
+}
+
+.welcome-card p {
+  color: #bdbdbd;
+  margin: 15px 0 25px;
+}
+
+.google-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+
+.google-btn img {
+  width: 220px;
+}
+
+.guest-btn {
+  width: 220px;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.input-box {
+  display: flex;
+  padding: 12px;
+  border-top: 1px solid #222;
+  background: #111;
+  position: sticky;
+  bottom: 0;
+}
+
+.input-box input {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  outline: none;
+  background: #1e1e1e;
+  color: white;
+}
+
+.input-box button {
+  margin-left: 10px;
+  padding: 12px 18px;
+  background: #00a884;
+  border: none;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.input-box button:disabled {
+  background: gray;
+  cursor: not-allowed;
+}
+
+/* App layout */
+.app {
+  height: 100vh;
+  display: flex;
+  background: #f4f7fb;
+  font-family: Arial, sans-serif;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 280px;
+  height: 100vh;
+  background: #111827;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  padding: 20px;
+  border-bottom: 1px solid #2d3748;
+}
+
+.sidebar-header h2 {
+  margin: 0 0 15px;
+  font-size: 22px;
+  color: #fff;
+}
+
+.new-chat-btn {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #00b894;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.chat-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.chat-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 6px;
+  color: #d1d5db;
+}
+
+.chat-item:hover,
+.chat-item.active {
+  background: #1f2937;
+  color: #fff;
+}
+
+.chat-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.empty {
+  color: #9ca3af;
+  text-align: center;
+}
+
+/* Main chat */
+.chat-box {
+  flex: 1;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  padding-bottom: 90px;
+}
+
+/* Empty chat */
+.empty-chat {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  font-size: 20px;
+}
+
+/* Message */
+.message {
+  max-width: 70%;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  border-radius: 14px;
+  line-height: 1.4;
+  font-size: 15px;
+}
+
+.message.sent {
+  margin-left: auto;
+  background: #00b894;
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+.message.received {
+  margin-right: auto;
+  background: #eef2f7;
+  color: #111827;
+  border-bottom-left-radius: 4px;
+}
+
+/* Send box */
+.send-message {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  gap: 10px;
+  padding: 16px;
+  background: #111827;
+  border-top: 1px solid #1f2937;
+}
+
+.send-message input {
+  flex: 1;
+  padding: 14px 16px;
+  border: none;
+  border-radius: 10px;
+  outline: none;
+  background: #1f2937;
+  color: #fff;
+  font-size: 15px;
+}
+
+.send-message input::placeholder {
+  color: #9ca3af;
+}
+
+.send-message button {
+  padding: 0 22px;
+  border: none;
+  border-radius: 10px;
+  background: #00b894;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Top header */
+.top-header {
+  height: 70px;
+  background: #4f7f95;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+}
+
+.top-header h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.signout-btn {
+  background: #172554;
+  color: #67e8f9;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+}
+
+.app-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f4f7fb;
+}
+
+.main-layout {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+.chat-section {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+

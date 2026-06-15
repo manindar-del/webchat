@@ -1,31 +1,92 @@
-import React, { useState } from "react";
-import { auth, db } from "../firebase";
+import { useState } from "react";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { db, auth } from "../firebase";
+import { getKolkataAIReply } from "./services/kolkataAI";
 
-const SendMessage = () => {
-  const [message, setMessage] = useState("");
+const SendMessage = ({ chatId }) => {
+  const [text, setText] = useState("");
+  const [loading, setLoading] = useState(false);
+const send = async () => {
+  if (!text.trim()) return;
+  if (!chatId) return;
+  if (!auth.currentUser) return;
 
-  const sendMessage = async (event) => {
-    event.preventDefault();
-    if (message.trim() === "") {
-      alert("Enter valid message");
-      return;
-    }
-    const { uid, displayName, photoURL } = auth.currentUser;
-    await addDoc(collection(db, "messages"), {
-      text: message,
-      name: displayName,
-      avatar: photoURL,
-      createdAt: serverTimestamp(),
+  const uid = auth.currentUser.uid;
+
+  const messagesRef = collection(
+    db,
+    "users",
+    uid,
+    "chats",
+    chatId,
+    "messages"
+  );
+
+  const userMessage = text;
+
+  setLoading(true);
+
+  try {
+    // Save user message
+    await addDoc(messagesRef, {
+      text: userMessage,
       uid,
+      createdAt: serverTimestamp(),
     });
-    setMessage("");
+
+    setText("");
+
+    // Get AI response
+    const botReply = await getKolkataAIReply(userMessage);
+
+    // Save AI response
+    await addDoc(messagesRef, {
+      text: botReply,
+      uid: "bot",
+      createdAt: serverTimestamp(),
+    });
+  } catch (error) {
+    console.error(error);
+
+    let errorMessage = "Something went wrong.";
+
+    if (
+      error?.message?.includes("429") ||
+      error?.status === 429
+    ) {
+      errorMessage =
+        "API limit exceeded. Please try again later.";
+    }
+
+    await addDoc(messagesRef, {
+      text: errorMessage,
+      uid: "bot",
+      createdAt: serverTimestamp(),
+    });
+  } finally {
+    setLoading(false);
+  }
+};
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      send();
+    }
   };
 
   return (
-    <form onSubmit={(event) => sendMessage(event)} className="send-message">
-      <input value={message} onChange={(e) => setMessage(e.target.value)} />
-      <button type="submit">Send</button>
+    <form className="send-message">
+      <input
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        onKeyDown={handleKeyDown}
+        placeholder="Ask about Kolkata..."
+        disabled={loading}
+      />
+
+      <button onClick={send} disabled={loading}>
+        {loading ? "..." : "Send"}
+      </button>
     </form>
   );
 };

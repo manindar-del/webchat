@@ -11,7 +11,6 @@ const NavBar = () => {
   const googleSignIn = () => {
     const provider = new GoogleAuthProvider();
     signInWithRedirect(auth, provider);
-    navigate('/SendMessage');
 
   };
 

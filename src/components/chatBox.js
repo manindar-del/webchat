@@ -1,44 +1,68 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
-  query,
   collection,
+  query,
   orderBy,
   onSnapshot,
-  limit,
 } from "firebase/firestore";
-import { db } from "../firebase";
+
+import { db, auth } from "../firebase";
 import Message from "./Message";
 import SendMessage from "./SendMessage";
 
-const ChatBox = () => {
+const ChatBox = ({ chatId }) => {
   const [messages, setMessages] = useState([]);
   const scroll = useRef();
-  useEffect(() => {
-    const q = query(
-      collection(db, "messages"),
-      orderBy("createdAt"),
-      limit(50)
-    );
-    const unsubscribe = onSnapshot(q, (QuerySnapshot) => {
-      let messages = [];
-      QuerySnapshot.forEach((doc) => {
-        messages.push({ ...doc.data(), id: doc.id });
-      });
-      setMessages(messages);
-    });
-    return () => unsubscribe;
-  }, []);
 
-  return (
-    <main className="chat-box">
-      <div className="messages-wrapper">
-        {messages?.map((message) => (
-          <Message key={message.id} message={message} />
-        ))}
+  useEffect(() => {
+    if (!chatId || !auth.currentUser) return;
+
+    const ref = collection(
+      db,
+      "users",
+      auth.currentUser.uid,
+      "chats",
+      chatId,
+      "messages"
+    );
+
+    const q = query(ref, orderBy("createdAt"));
+
+    const unsub = onSnapshot(q, (snap) => {
+      setMessages(
+        snap.docs.map((d) => ({
+          id: d.id,
+          ...d.data(),
+        }))
+      );
+    });
+
+    return () => unsub();
+  }, [chatId]);
+
+  useEffect(() => {
+    scroll.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  if (!chatId) {
+    return (
+      <div className="empty-chat">
+        Select or create a chat
       </div>
-      <span ref={scroll}></span>
-      <SendMessage scroll={scroll} />
-    </main>
+    );
+  }
+  return (
+    <div className="chat-box">
+      <div className="messages">
+        {messages.map((m) => (
+          <Message key={m.id} message={m} />
+        ))}
+        <div ref={scroll} />
+      </div>
+
+      <SendMessage chatId={chatId} />
+    </div>
   );
 };
+
 export default ChatBox;

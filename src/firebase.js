@@ -8,13 +8,14 @@ import { getAnalytics } from "firebase/analytics";
 // Your web app's Firebase configuration
 
 const firebaseConfig = {
-    apiKey: "AIzaSyD1Q9Pr61pvg3lXZZA9atuNlC3z2xI2Hl8",
-    authDomain: "chatbox-9ae4f.firebaseapp.com",
-    projectId: "chatbox-9ae4f",
-    storageBucket: "chatbox-9ae4f.appspot.com",
-    messagingSenderId: "733837034096",
-    appId: "1:733837034096:web:6b1502a77e509f55902ab5",
-    measurementId: "G-HBCHEN7C7P"
+  apiKey: "AIzaSyAXa0R0_N4n_ObMlFjgueT7mcup-1Sqh20",
+  authDomain: "kolkata-ai.firebaseapp.com",
+  databaseURL: "https://kolkata-ai-default-rtdb.firebaseio.com",
+  projectId: "kolkata-ai",
+  storageBucket: "kolkata-ai.firebasestorage.app",
+  messagingSenderId: "930150133754",
+  appId: "1:930150133754:web:62cba971feae2c4e85fe43",
+  measurementId: "G-YDFYCVZQ4N",
 };
 
 // Initialize Firebase

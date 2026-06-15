@@ -1,32 +1,61 @@
 import React from "react";
 import GoogleSignin from "../img/google-signin-button.png";
-import { GoogleAuthProvider, signInWithRedirect } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  signInWithRedirect,
+  signInAnonymously,
+} from "firebase/auth";
+
 import { auth } from "../firebase";
-import { useNavigate } from "react-router-dom";
 
 const Welcome = () => {
-  const navigate = useNavigate();
-  const googleSignIn = () => {
+  const googleSignIn = async () => {
     const provider = new GoogleAuthProvider();
-    signInWithRedirect(auth, provider);
-    navigate('/SendMessage');
+    await signInWithRedirect(auth, provider);
+    
 
+  };
+
+  const guestLogin = async () => {
+    await signInAnonymously(auth);
   };
 
   return (
     <main className="welcome">
-      <h2>Welcome to React Chat.</h2>
-      <img src="/logo512.png" alt="ReactJs logo" width={50} height={50} />
-      <p>Sign in with Google to chat with with your fellow React Developers.</p>
-      <button className="sign-in">
+      <div className="welcome-card">
         <img
-          onClick={googleSignIn}
-          src={GoogleSignin}
-          alt="sign in with google"
-          type="button"
+          src="/logo512.png"
+          alt="logo"
+          width={80}
+          height={80}
         />
-      </button>
+
+        <h1>Kolkata AI Chat</h1>
+
+        <p>
+          Chat with AI, save conversations,
+          and access chat history anytime.
+        </p>
+
+        <button
+          className="google-btn"
+          onClick={googleSignIn}
+        >
+          <img
+            src={GoogleSignin}
+            alt="Google Login"
+          />
+        </button>
+
+        <button
+          className="guest-btn"
+          onClick={guestLogin}
+        >
+          Continue as Guest
+        </button>
+      </div>
     </main>
   );
 };
+
 export default Welcome;

@@ -9,9 +9,13 @@ import Welcome from "./components/Welcome";
 import NavBar from "./components/NavBar";
 
 import "./App.css";
-import ChatPage from "./pages/ChatPage";
+
 
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import ChatPage from "./pages/ChatPage";
+
+
+
 
 function App() {
   const [user] = useAuthState(auth);
@@ -32,7 +36,6 @@ function App() {
             element={
               user ? (
                 <ChatPage
-                  user={user}
                   chatId={chatId}
                   setChatId={setChatId}
                 />

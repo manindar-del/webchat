@@ -38,6 +38,7 @@ function App() {
                 <ChatPage
                   chatId={chatId}
                   setChatId={setChatId}
+                  user={user}
                 />
               ) : (
                 <Navigate to="/" replace />
